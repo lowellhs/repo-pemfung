@@ -60,10 +60,43 @@ applyTwice :: (a -> a) -> a -> a
 applyTwice f x = f (f x)
 ~~~
 
+#### zipWith ####
 Terdapat fungsi `zipWith` yang menerima parameter sebuah fungsi dan 2 buah list dimana akan menggabungkan kedua list dan mengaplikasikan fungsi yang diberikan. Definisinya berikut (`zipWith'` karena terdapat built-in function bernama `zipWith`)
 ~~~
 zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]  
 zipWith' _ [] _ = []  
 zipWith' _ _ [] = []  
 zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs ys 
+~~~
+
+#### flip ####
+Fungsi `flip` menerima sebuah fungsi dan dua parameter yang dibalik posisinya, berikut contohnya,
+~~~
+flip' :: (a -> b -> c) -> (b -> a -> c)
+flip' f = g
+    where g x y = f y x
+~~~
+Atau dengan bentuk yang lebih simple
+~~~
+flip' :: (a -> b -> c) -> b -> a -> c
+flip' f y x = f x y
+~~~
+Pada bentuk yang pertama terlihat bahwa tanda kurung tidak diperlukan karena secara default fungsi mengalami curry. `(a -> b -> c) -> (b -> a -> c)` sama dengan `(a -> b -> c) -> b -> a -> c`. Definisi tipe ini memiliki arti fungsi `flip'` menerima sebuah fungsi yang membutuhkan parameter `a` dan `b`, kemudian return sebuah fungsi (`c`) yang membutuhkan parameter `b` dan `a` sehingga dapat ditulis pada bentuk kedua.
+
+#### map ####
+`map` menerima fungsi dan sebuah list, kemudian fungsi tersebut diaplikasikan ke semua elemen list. Berikut definisi dan deklarasi fungsinya,
+~~~
+map' :: (a -> b) -> [a] -> [b]  
+map' _ [] = []  
+map' f (x:xs) = f x : map' f xs 
+~~~
+
+#### filter ####
+`filter` menerima fungsi boolean dan sebuah list, kemudian mengambil semua elemen dimana fungsi boolean terpenuhi.
+~~~
+filter' :: (a -> Bool) -> [a] -> [a]  
+filter' _ [] = []  
+filter' p (x:xs)   
+    | p x       = x : filter' p xs  
+    | otherwise = filter' p xs  
 ~~~
