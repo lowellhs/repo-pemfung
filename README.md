@@ -41,5 +41,29 @@ add x y = x + y
 Pada baris pertama merupakan deklarasi fungsi `add`. Pada deklarasi ini kita dapat melihat nama fungsi `add` memiliki tipe parameter pertama sebuah Int, parameter kedua Int dan hasilnya harus berupa Int.
 Pada baris kedua merupakan definisi fungsi dengan parameter `x` dan `y` menghasilkan `x + y`.
 
-
 ## High-Order Function ##
+
+### Curried Functions ###
+Semua fungsi di Haskell sebenarnya hanya memiliki 1 parameter, namun fungsi yang dapat menerima beberapa parameter adalah **curried functions**. Misalkan fungsi `max 4 5` untuk mencari nilai yang lebih besar. Fungsi ini sebenarnya menerima `4` dahulu `(max 4)` kemudian baru menerima `5` yaitu `((max 4) 5)`. Ketika memanggil fungsi dengan sedikit parameter maka kita mendapatkan fungsi yang **partially applied**. Misalkan,
+~~~
+multIt :: (Num a) => a -> a -> a
+multIt x y = x * y
+
+doubleIt = mult 2
+tripleIt = mult 3
+~~~
+Ketika memberikan parameter `doubleIt` memberikan hasil kelipatan dua dari parameter tersebut, begitu juga dengan `tripleIt`. Hal ini dikarenakan `doubleIt` dan `tripleIt` merupakan *partially applied* dari fungsi `multIt`.
+
+Fungsi juga dapat menerima fungsi sebagai parameternya, contohnya
+~~~
+applyTwice :: (a -> a) -> a -> a
+applyTwice f x = f (f x)
+~~~
+
+Terdapat fungsi `zipWith` yang menerima parameter sebuah fungsi dan 2 buah list dimana akan menggabungkan kedua list dan mengaplikasikan fungsi yang diberikan. Definisinya berikut (`zipWith'` karena terdapat built-in function bernama `zipWith`)
+~~~
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]  
+zipWith' _ [] _ = []  
+zipWith' _ _ [] = []  
+zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs ys 
+~~~
