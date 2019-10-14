@@ -1,6 +1,5 @@
 **Functional Programming Learning Progress**
 ===========================================
-
 ## Haskell Basics ##
 Pada bagian ini akan ditunjukkan sintaks — sintaks yang sering digunakan nantinya. Terdapat penjelasan tentang dasar tipe data pada Haskell, bagaimana membuat fungsi dan hal yang lebih dalam dari tipe data atau fungsi.
 Data Types (Tipe Data)

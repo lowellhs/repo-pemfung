@@ -1,6 +1,5 @@
-Latihan 1: HOF
+Latihan HOF
 =============
-
 **Define the length function using map and sum.**
 ~~~
 arrLength :: [a] -> Int
@@ -10,7 +9,10 @@ arrLength arr = sum(map (\x -> 1) arr)
 
 **What does `map (+1) (map (+1) xs)` do? Can you conclude anything in general about properties of `map f (map g xs)`, where `f` and `g` are arbitrary functions?**
 ~~~
-Ekspresi map (+1) (map (+1) xs), pertama — tama menambahkan 1 terhadap setiap elemen dalam list xs. Kemudian, ditambahkan lagi terhadap setiap elemen sebesar 1. Ini seperti fungsi komposisi sehingga map f (map g xs) berbentuk seperti f(g(x)) dalam matematika.
+Ekspresi map (+1) (map (+1) xs), pertama — tama menambahkan 1 
+terhadap setiap elemen dalam list xs. Kemudian, ditambahkan 
+lagi terhadap setiap elemen sebesar 1. Ini seperti fungsi komposisi 
+sehingga map f (map g xs) berbentuk seperti f(g(x)) dalam matematika.
 ~~~
 <br />
 
@@ -24,7 +26,9 @@ iter n f x = f(iter (n - 1) f x)
 
 **What is the type and effect of the following function? `\n -> iter n succ`**
 ~~~
-Fungsi tersebut merupakan anonymous function sehingga dapat digunakan seperti, (\n -> iter n succ) 10 20 yang sama saja atau ekivalen dengan ekspresi iter 10 succ 20
+Fungsi tersebut merupakan anonymous function sehingga
+dapat digunakan seperti, (\n -> iter n succ) 10 20 
+Yang sama saja atau ekivalen dengan ekspresi iter 10 succ 20
 ~~~
 <br />
 
