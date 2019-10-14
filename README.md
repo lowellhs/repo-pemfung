@@ -100,3 +100,37 @@ filter' p (x:xs)
     | p x       = x : filter' p xs  
     | otherwise = filter' p xs  
 ~~~
+
+#### lambdas function ####
+Merupakan *anonymous function* contohnya,
+~~~
+add = (\a b -> a + b)
+~~~
+Fungsi `add` berisi *anonymous function* yang menerima 2 parameter dan menghasilkan penjumlahan kedua parameter.
+
+#### fold ####
+Definisi dari `fold` adalah
+~~~
+fold :: (a -> b -> b) -> b -> ([a] -> b)
+fold f v []     = v
+fold f v (x:xs) = f x (fold f v xs)
+~~~
+Properti universal dari `fold` adalah,
+~~~
+g       []  = v
+g (x : xs)  = f x (g xs)
+~~~
+maka dapat disimpulkan bahwa
+~~~
+g = fold f v
+~~~
+Misalkan ada fungsi untuk melakukan sumasi terhadap setiap angka di dalam list,
+~~~
+sums :: [Int] -> Int
+sums       []   = 0
+sums (x : xs)   = x + sum xs
+~~~
+Dengan menyamakan dengan bentuk universal maka didapat `v = 0` kemudian `x + sum xs = f x (sum xs)`. Substitusi `sum xs` dengan `y` didapat `x + y = f x y` disimpulkan `f = (+)`. Untuk bentuk `fold` adalah,
+~~~
+sums = fold (+) 0
+~~~
