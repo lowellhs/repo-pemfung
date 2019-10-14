@@ -95,3 +95,41 @@ flip :: (a -> b -> c) -> (b -> a -> c)
 flip f a b = f b a
 ~~~
 <br />
+
+**Can you rewrite the following list comprehensions using the higher-order functions map and filter? You might need the function concat too.**
+~~~
+[ x+1 | x <- xs ]
+f1 xs = map (+1) xs
+
+[ x+y | x <- xs, y <-ys ]
+f2 xs ys = concat (map (\x -> map (\y -> (x+y)) ys) xs)
+
+[ x+2 | x <- xs, x > 3 ]
+f3 xs = map (+2) (filter (>3) xs)
+
+[ x+3 | (x,_) <- xys ]
+f4 xys = map (\(x,y) -> x + 3) xys
+
+[ x+4 | (x,y) <- xys, x+y < 5 ]
+f5 xys = map (\(x,y) -> x+4) (filter (\(x,y) -> x+y < 5) xys)
+
+[ x+5 | Just x <- mxs ]
+f6 mxs = map (\(Just x) -> x+5) mxs
+~~~
+<br />
+
+**Can you it the other way around? I.e. rewrite the following expressions as list comprehensions.**
+~~~
+map (+3) xs
+f7 xs = [ x+3 | x <- xs ]
+
+filter (>7) xs
+f8 xs = [ x | x <- xs, x > 7 ]
+
+concat (map (\x -> map (\y -> (x,y)) ys) xs)
+f9 xs ys = [ (x,y) | x <- xs, y <- ys ]
+
+filter (>3) (map (\(x,y) -> x+y) xys)
+f10 xys = [ x+y | (x,y) <- xys, x+y > 3 ]
+~~~
+<br />
