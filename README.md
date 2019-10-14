@@ -133,3 +133,6 @@ Dengan menyamakan dengan bentuk universal maka didapat `v = 0` kemudian `x + sum
 ~~~
 sums = fold (+) 0
 ~~~
+<br />
+
+### List Comprehension and Lazy Evaluation ###

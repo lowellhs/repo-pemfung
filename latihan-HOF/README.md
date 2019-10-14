@@ -1,5 +1,13 @@
 Latihan HOF
 =============
+
+Akan dibahas latihan yang terdiri dari :<br />
+**- Latihan High-order function**<br />
+**- Latihan list comprehension dan lazy evaluation**
+<br />
+<br />
+
+## Latihan High-order function ##
 **Define the length function using map and sum.**
 ~~~
 arrLength :: [a] -> Int
@@ -131,5 +139,51 @@ f9 xs ys = [ (x,y) | x <- xs, y <- ys ]
 
 filter (>3) (map (\(x,y) -> x+y) xys)
 f10 xys = [ x+y | (x,y) <- xys, x+y > 3 ]
+~~~
+<br />
+
+## Latihan list comprehension dan lazy evaluation ##
+
+**Uraikan langkah evaluasi dari ekspresi berikut: `[ x+y | x <- [1 .. 4], y <- [2 .. 4], x > y ]`**
+~~~
+x diambil dari range 1 sampai 4 (inklusif)
+y diambil dari range 2 sampai 4 (inklusif)
+Setelah itu dilakukan filtering dengan predikat x > y
+didapatkan output x + y
+~~~
+<br />
+
+**Buatlah fungsi divisor yang menerima sebuah bilangan bulat n dan mengembalikan list bilangan bulat positif yang membagi habis n**
+~~~
+divisor :: Int -> [Int]
+divisor n = [ x | x <- [1..n], n `mod` x == 0 ]
+~~~
+<br />
+
+**Buatlah definisi quick sort menggunakan list comprehension**
+~~~
+quicksort :: [Int] -> [Int]
+quicksort []      = []
+quicksort (x:xs)  = (quicksort (filter (<=x) xs)) ++ [x] ++ (quicksort (filter (>x) xs))
+~~~
+<br />
+
+**Buatlah definisi infinite list untuk permutation**
+~~~
+perm [] = [[]]
+perm ls = [ x:ps | x <- ls, ps <- perm(ls \\ [x])]
+~~~
+<br />
+
+**Buatlah definisi untuk memberikan infinite list dari bilangan prima menerapkan algoritma Sieve of Erastothenes**
+~~~
+primes = sieve [2 ..]
+  where sieve (x:xs) = x : (sieve [z | z <- xs, z `mod` x /= 0])
+~~~
+<br />
+
+**Buatlah definisi infinite list dari triple pythagoras. List tersebut terdiri dari element triple bilangan bulat positif yang mengikut persamaan pythagoras**
+~~~
+pythaTriple = [(x,y,z) |  z <- [5 ..], y <- [z, z-1 .. 1], x <- [y, y-1 .. 1], x^2 + y^2 == z^2 ]
 ~~~
 <br />
