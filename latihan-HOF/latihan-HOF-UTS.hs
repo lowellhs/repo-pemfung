@@ -66,11 +66,10 @@ foldExpr f v (e1 :- e2)         = f ( (foldExpr f v e1) :- (foldExpr f v e2) )
 foldExpr f v (e1 :* e2)         = f ( (foldExpr f v e1) :* (foldExpr f v e2) )
 foldExpr f v (e1 :/ e2)         = f ( (foldExpr f v e1) :/ (foldExpr f v e2) )
 
-id' x = (C x)
-
-evaluate' = foldExpr f id'
+evaluateFold = foldExpr f (\x -> (C x))
         where
                 f ((C f1) :+ (C f2)) = (C (f1 + f2))
                 f ((C f1) :- (C f2)) = (C (f1 - f2))
                 f ((C f1) :* (C f2)) = (C (f1 * f2))
                 f ((C f1) :/ (C f2)) = (C (f1 / f2))
+evaluate' e = (\(C x) -> x) (evaluateFold e)
