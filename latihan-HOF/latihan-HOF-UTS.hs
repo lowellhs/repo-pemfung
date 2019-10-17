@@ -60,16 +60,41 @@ mapExpr f (e1 :/ e2)    = (mapExpr f e1) :/ (mapExpr f e2)
 -- mapExpr (+3) (C 10 :+ C 12)
 -- maka ekspresi menjadi C 13.0 :+ C 15.0
 
-foldExpr f v (C x)              = v x
+
+--
+--
+--
+--
+--
+
+foldExpr f v (C x)              = v (C x)
 foldExpr f v (e1 :+ e2)         = f ( (foldExpr f v e1) :+ (foldExpr f v e2) )
 foldExpr f v (e1 :- e2)         = f ( (foldExpr f v e1) :- (foldExpr f v e2) )
 foldExpr f v (e1 :* e2)         = f ( (foldExpr f v e1) :* (foldExpr f v e2) )
 foldExpr f v (e1 :/ e2)         = f ( (foldExpr f v e1) :/ (foldExpr f v e2) )
 
-evaluateFold = foldExpr f (\x -> (C x))
+evaluate' e = (\(C x) -> x) (foldExpr f id e)
         where
                 f ((C f1) :+ (C f2)) = (C (f1 + f2))
                 f ((C f1) :- (C f2)) = (C (f1 - f2))
                 f ((C f1) :* (C f2)) = (C (f1 * f2))
                 f ((C f1) :/ (C f2)) = (C (f1 / f2))
-evaluate' e = (\(C x) -> x) (evaluateFold e)
+
+-- misalkan
+-- evaluate' (((C 10 :+ C 2) :* C 10) :- (C 1000 :/ C 10))
+-- akan menghasilkan 20.0 karena ekivalen dengan ((10 + 2) * 10) - (1000 / 10)
+
+--
+--
+--
+--
+--
+
+mapExpr' g = foldExpr f gf
+        where
+                f x = x
+                gf (C x) = (C (g x)) 
+
+-- sehingga bila dijalankan,
+-- mapExpr' (+3) (C 10 :+ C 12)
+-- maka ekspresi menjadi C 13.0 :+ C 15.0
