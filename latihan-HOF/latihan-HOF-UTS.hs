@@ -59,3 +59,16 @@ mapExpr f (e1 :/ e2)    = (mapExpr f e1) :/ (mapExpr f e2)
 -- sehingga bila dijalankan,
 -- mapExpr (+3) (C 10 :+ C 12)
 -- maka ekspresi menjadi C 13.0 :+ C 15.0
+
+foldExpr f v (C x)              = v x
+foldExpr f v (e1 :+ e2)         = f ( (foldExpr f v e1) :+ (foldExpr f v e2) )
+foldExpr f v (e1 :- e2)         = f ( (foldExpr f v e1) :- (foldExpr f v e2) )
+foldExpr f v (e1 :* e2)         = f ( (foldExpr f v e1) :* (foldExpr f v e2) )
+foldExpr f v (e1 :/ e2)         = f ( (foldExpr f v e1) :/ (foldExpr f v e2) )
+
+-- evaluate' e = foldExpr f id e
+--         where
+--                 f (e1 :+ e2) = e1 + e2
+--                 f (e1 :- e2) = e1 - e2
+--                 f (e1 :* e2) = e1 * e2
+--                 f (e1 :/ e2) = e1 / e2
