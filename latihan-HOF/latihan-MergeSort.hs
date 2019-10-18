@@ -7,4 +7,5 @@ merge arrx@(x:xs) arry@(y:ys) | (x <= y) = x : merge xs arry
 mergeSort :: [Int] -> [Int]
 mergeSort []  = []
 mergeSort [x] = [x]
-mergeSort xs  = merge (mergeSort(take (div (length xs) 2) xs)) (mergeSort(drop (div (length xs) 2) xs))
+mergeSort xs  = merge (mergeSort(take g xs)) (mergeSort(drop g xs))
+    where g = div (length xs) 2
