@@ -119,21 +119,59 @@ data Expr  = C Float
             | V String
         deriving (Show)
 
-subst v0 e0 (V v1)            = if (v0 == v1) then e0 else (V v1)
-subst v0 e0 (C c)             = (C c)
-subst v0 e0 (e1 :+ e2)        = (subst v0 e0 e1) :+ (subst v0 e0 e2)
-subst v0 e0 (e1 :- e2)        = (subst v0 e0 e1) :- (subst v0 e0 e2)
-subst v0 e0 (e1 :* e2)        = (subst v0 e0 e1) :* (subst v0 e0 e2)
-subst v0 e0 (e1 :/ e2)        = (subst v0 e0 e1) :/ (subst v0 e0 e2)
-subst v0 e0 (Let v1 e1 e2)    = Let v1 e1 (subst v0 e0 e2)
+-- subst v0 e0 (V v1)            = if (v0 == v1) then e0 else (V v1)
+-- subst v0 e0 (C c)             = (C c)
+-- subst v0 e0 (e1 :+ e2)        = (subst v0 e0 e1) :+ (subst v0 e0 e2)
+-- subst v0 e0 (e1 :- e2)        = (subst v0 e0 e1) :- (subst v0 e0 e2)
+-- subst v0 e0 (e1 :* e2)        = (subst v0 e0 e1) :* (subst v0 e0 e2)
+-- subst v0 e0 (e1 :/ e2)        = (subst v0 e0 e1) :/ (subst v0 e0 e2)
+-- subst v0 e0 (Let v1 e1 e2)    = Let v1 e1 (subst v0 e0 e2)
+
+-- evaluate (C x)                = x
+-- evaluate (e1 :+ e2)           = evaluate e1 + evaluate e2
+-- evaluate (e1 :- e2)           = evaluate e1 - evaluate e2
+-- evaluate (e1 :* e2)           = evaluate e1 * evaluate e2
+-- evaluate (e1 :/ e2)           = evaluate e1 / evaluate e2
+-- evaluate (Let v e0 e1)        = evaluate (subst v e0 e1)
+-- evaluate (V v)                = 0.0
+
+--
+-- Sehingga bila dijalankan evaluate (Let "x" (C 100) (Let "y" (C 10) (V "x" :/ V "y" :+ C 12)))
+-- menghasilkan 22.0, karena ekspresi tersebut sama seperti : x/y + 12 dimana x = 100 dan y = 10
+-- 
+-- Kita dapat mendefinisikan fungsi fold baru
+-- Terlihat pada fungsi subst bahwa subst v0 selalu bersama
+-- Ini dapat kita misalkan f 
+--
+
+foldExpr f vx (C x)              = vx (C x)
+foldExpr f vx (V v)              = vx (V v)
+foldExpr f vx (e1 :+ e2)         = f ( (foldExpr f vx e1) :+ (foldExpr f vx e2) )
+foldExpr f vx (e1 :- e2)         = f ( (foldExpr f vx e1) :- (foldExpr f vx e2) )
+foldExpr f vx (e1 :* e2)         = f ( (foldExpr f vx e1) :* (foldExpr f vx e2) )
+foldExpr f vx (e1 :/ e2)         = f ( (foldExpr f vx e1) :/ (foldExpr f vx e2) )
+foldExpr f vx (Let v1 e1 e2)     = Let v1 e1 ( f (foldExpr f vx e2) )
+
+--
+-- Sehingga bentuk substitusi menggunakan fold adalah
+--
+
+substFold v0 e0 = foldExpr f vx
+        where
+                vx (C x) = C x
+                vx (V v) = if (v0 == v) then e0 else (V v)
+                f x      = x
 
 evaluate (C x)                = x
 evaluate (e1 :+ e2)           = evaluate e1 + evaluate e2
 evaluate (e1 :- e2)           = evaluate e1 - evaluate e2
 evaluate (e1 :* e2)           = evaluate e1 * evaluate e2
 evaluate (e1 :/ e2)           = evaluate e1 / evaluate e2
-evaluate (Let v e0 e1)        = evaluate (subst v e0 e1)
+evaluate (Let v e0 e1)        = evaluate (substFold v e0 e1)
 evaluate (V v)                = 0.0
 
+--
 -- Sehingga bila dijalankan evaluate (Let "x" (C 100) (Let "y" (C 10) (V "x" :/ V "y" :+ C 12)))
 -- menghasilkan 22.0, karena ekspresi tersebut sama seperti : x/y + 12 dimana x = 100 dan y = 10
+-- Selanjutnya evaluate seharusnya dapat menggunakan fold
+--
