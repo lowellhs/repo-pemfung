@@ -23,3 +23,10 @@
 -- artinya map const move ke [1,2,3,..n]
 -- jadinya [const move 1, const move 2, .. const move n]
 -- bentuk akhirnya move >> move >> .. >> move sebanyak n
+
+-- DIRECTION --
+-- right, left :: Direction -> Direction
+-- right d = toEnum (succ (fromEnum d) `mod` 4)
+-- left d  = toEnum (pred (fromEnum d) `mod` 4)
+-- toEnum :: Enum a => Int -> a 
+-- fromEnum :: Enum a => a -> Int
