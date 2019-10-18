@@ -150,7 +150,7 @@ foldExpr f vx (e1 :+ e2)         = f ( (foldExpr f vx e1) :+ (foldExpr f vx e2) 
 foldExpr f vx (e1 :- e2)         = f ( (foldExpr f vx e1) :- (foldExpr f vx e2) )
 foldExpr f vx (e1 :* e2)         = f ( (foldExpr f vx e1) :* (foldExpr f vx e2) )
 foldExpr f vx (e1 :/ e2)         = f ( (foldExpr f vx e1) :/ (foldExpr f vx e2) )
-foldExpr f vx (Let v1 e1 e2)     = Let v1 e1 ( f (foldExpr f vx e2) )
+foldExpr f vx (Let v1 e1 e2)     = f ( Let v1 e1 (foldExpr f vx e2) )
 
 --
 -- Sehingga bentuk substitusi menggunakan fold adalah
@@ -159,16 +159,24 @@ foldExpr f vx (Let v1 e1 e2)     = Let v1 e1 ( f (foldExpr f vx e2) )
 substFold v0 e0 = foldExpr f vx
         where
                 vx (C x) = C x
-                vx (V v) = if (v0 == v) then e0 else (V v)
+                vx (V v) | (v0 == v) = e0 | otherwise = (V v)
                 f x      = x
 
-evaluate (C x)                = x
-evaluate (e1 :+ e2)           = evaluate e1 + evaluate e2
-evaluate (e1 :- e2)           = evaluate e1 - evaluate e2
-evaluate (e1 :* e2)           = evaluate e1 * evaluate e2
-evaluate (e1 :/ e2)           = evaluate e1 / evaluate e2
-evaluate (Let v e0 e1)        = evaluate (substFold v e0 e1)
-evaluate (V v)                = 0.0
+--
+-- Sehingga bila dijalankan evaluate (Let "x" (C 100) (Let "y" (C 10) (V "x" :/ V "y" :+ C 12)))
+-- menghasilkan 22.0, karena ekspresi tersebut sama seperti : x/y + 12 dimana x = 100 dan y = 10
+-- Selanjutnya evaluate seharusnya dapat menggunakan fold
+--
+
+evaluate e = (\(C x) -> x) (foldExpr f id (foldExpr ff id e))
+        where
+                ff (Let v e0 e1)      = substFold v e0 e1
+                ff x                  = x
+
+                f ((C f1) :+ (C f2))  = (C (f1 + f2))
+                f ((C f1) :- (C f2))  = (C (f1 - f2))
+                f ((C f1) :* (C f2))  = (C (f1 * f2))
+                f ((C f1) :/ (C f2))  = (C (f1 / f2))
 
 --
 -- Sehingga bila dijalankan evaluate (Let "x" (C 100) (Let "y" (C 10) (V "x" :/ V "y" :+ C 12)))
