@@ -161,9 +161,6 @@ changeVarToConst = foldExpr f id
 
 evaluate e = extractX (foldExpr f id (changeVarToConst e))
         where
-                ff (Let v e0 e1)      = substFold v e0 e1
-                ff x                  = x
-
                 f ((C f1) :+ (C f2))  = (C (f1 + f2))
                 f ((C f1) :- (C f2))  = (C (f1 - f2))
                 f ((C f1) :* (C f2))  = (C (f1 * f2))
