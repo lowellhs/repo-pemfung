@@ -152,7 +152,14 @@ substFold v0 e0 = foldExpr f vx
 
 -- Selanjutnya evaluate, seharusnya dapat menggunakan fold
 
-evaluate e = (\(C x) -> x) (foldExpr f id (foldExpr ff id e))
+extractX (C x) = x
+
+changeVarToConst = foldExpr f id
+        where
+                f (Let v e0 e1) = substFold v e0 e1
+                f x             = x
+
+evaluate e = extractX (foldExpr f id (changeVarToConst e))
         where
                 ff (Let v e0 e1)      = substFold v e0 e1
                 ff x                  = x
@@ -165,6 +172,36 @@ evaluate e = (\(C x) -> x) (foldExpr f id (foldExpr ff id e))
 -- Sehingga bila dijalankan evaluate (Let "x" (C 100) (Let "y" (C 10) (V "x" :/ V "y" :+ C 12)))
 -- menghasilkan 22.0, karena ekspresi tersebut sama seperti : x/y + 12 dimana x = 100 dan y = 10
 -- Selanjutnya evaluate seharusnya dapat menggunakan fold
+--------------------------------------------------------------------------------------------------------------------
+-- END --
+--------------------------------------------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+-- Implementasi map, menghitung konstanta, menghitung operator dan menghitung variabel
+-- Semuanya menggunakan fold
+--------------------------------------------------------------------------------------------------------------------
+mapExpr g = foldExpr id gf
+        where
+                gf (V v) = V v
+                gf (C x) = C (g x) 
+
+countConst e = extractX (foldExpr f g (changeVarToConst e))
+        where
+                g x                   = C 1
+                f ((C f1) :+ (C f2))  = C (f1 + f2)
+                f ((C f1) :- (C f2))  = C (f1 + f2)
+                f ((C f1) :* (C f2))  = C (f1 + f2)
+                f ((C f1) :/ (C f2))  = C (f1 + f2)
+
+countOperator e = extractX (foldExpr f g (changeVarToConst e))
+        where
+                g x                   = C 0
+                f ((C f1) :+ (C f2))  = C (f1 + f2 + 1)
+                f ((C f1) :- (C f2))  = C (f1 + f2 + 1)
+                f ((C f1) :* (C f2))  = C (f1 + f2 + 1)
+                f ((C f1) :/ (C f2))  = C (f1 + f2 + 1)
 --------------------------------------------------------------------------------------------------------------------
 -- END --
 --------------------------------------------------------------------------------------------------------------------
