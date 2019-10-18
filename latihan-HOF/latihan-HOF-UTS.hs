@@ -182,10 +182,7 @@ evaluate e = extractX (foldExpr f id (changeVarToConst e))
 -- Implementasi map, menghitung konstanta, menghitung operator dan menghitung variabel
 -- Semuanya menggunakan fold
 --------------------------------------------------------------------------------------------------------------------
-mapExpr g = foldExpr id gf
-        where
-                gf (V v) = V v
-                gf (C x) = C (g x) 
+mapExpr = foldExpr id
 
 countConst e = extractX (foldExpr f g (changeVarToConst e))
         where
@@ -202,6 +199,17 @@ countOperator e = extractX (foldExpr f g (changeVarToConst e))
                 f ((C f1) :- (C f2))  = C (f1 + f2 + 1)
                 f ((C f1) :* (C f2))  = C (f1 + f2 + 1)
                 f ((C f1) :/ (C f2))  = C (f1 + f2 + 1)
+
+countVariable e = extractX (foldExpr f id (foldExpr f id (mapExpr g e)))
+        where
+                g (C x)               = C 0
+                g (V v)               = C 0
+                f (Let v e0 e1)       = C 1 :+ e1
+                f ((C f1) :+ (C f2))  = C (f1 + f2)
+                f ((C f1) :- (C f2))  = C (f1 + f2)
+                f ((C f1) :* (C f2))  = C (f1 + f2)
+                f ((C f1) :/ (C f2))  = C (f1 + f2)
+
 --------------------------------------------------------------------------------------------------------------------
 -- END --
 --------------------------------------------------------------------------------------------------------------------
