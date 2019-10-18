@@ -1,0 +1,3 @@
+-- Rumus KPK(x, y) adalah (x*y)/FPB(x, y)
+-- FPB(x, y) = FPB(y, x mod y)
+-- sehingga x >= y
