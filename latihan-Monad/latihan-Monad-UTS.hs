@@ -30,3 +30,14 @@
 -- left d  = toEnum (pred (fromEnum d) `mod` 4)
 -- toEnum :: Enum a => Int -> a 
 -- fromEnum :: Enum a => a -> Int
+
+-- MAPM_ --
+-- mapM_ memiliki tipe:
+-- mapM_ :: (Foldable t, Monad m) => (a -> m b) -> t a -> m ()
+-- misalkan ada array [1, 2, 3, 4]
+-- ketika dipanggil mapM_ (print) [1, 2, 3, 4]
+-- ekivalen dengan print 1 >> print 2 >> print 3 >> print 4
+
+-- FORLOOP --
+-- forloop []     action = return ()
+-- forloop (x:xs) action = (action x) >> (forloop xs action)
